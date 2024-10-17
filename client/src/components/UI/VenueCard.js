@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, Button, Tag, Typography, Space } from 'antd';
+import { EyeOutlined, DeleteOutlined, CalendarOutlined } from '@ant-design/icons';
 import { getOneVenue } from '../../actions/venue.actions';
 import { getPublicURL } from '../../urlConfig';
-import { ImgsCard } from './ImgsCard';
-import { useDispatch, useSelector } from 'react-redux';
 import BookingModel from './BookingModel';
+
+const { Meta } = Card;
+const { Text, Title } = Typography;
 
 const VenueCard = (props) => {
     const [bookingModalShow, setBookingModalShow] = useState(false);
-    const { img1, img2, category, venueName, ownerId, _id, price, location, address, style, isDelete } = props;
+    const { img1, category, venueName, ownerId, _id, price, location, address, isDelete } = props;
 
     const auth = useSelector(state => state.auth);
     const dispatch = useDispatch();
@@ -19,60 +22,59 @@ const VenueCard = (props) => {
     };
 
     return (
-        <div className="max-w-xs bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
-            {/* Image Section */}
-            <div className="relative h-48 w-full overflow-hidden">
-                <img
-                    src={getPublicURL(img1)}
-                    alt="venue picture"
-                    className="h-full w-full object-cover"
-                />
-            </div>
-
-            {/* Card Content */}
-            <div className="p-4">
-                {/* Category */}
-                <h6 className="text-sm text-gray-500">{category}</h6>
-
-                {/* Venue Name and Price */}
-                <div className="flex justify-between items-center mt-2">
-                    <h5 className="text-lg font-semibold text-gray-800 truncate">{venueName}</h5>
-                    <h5 className="text-lg font-semibold text-green-500">₹ {price}</h5>
+        <Card
+            hoverable
+            className="w-full max-w-sm mx-auto transition-all duration-300 hover:shadow-xl"
+            cover={
+                <div className="relative h-48 overflow-hidden">
+                    <img
+                        alt={`${venueName} venue`}
+                        src={getPublicURL(img1)}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                    />
+                    <Tag color="blue" className="absolute top-2 left-2">
+                        {category}
+                    </Tag>
                 </div>
-
-                {/* Location and Address */}
-                <p className="text-sm text-gray-600 truncate mt-2">{location}, {address}</p>
-
-                {/* Buttons */}
-                <div className="mt-4 flex justify-between items-center">
-                    <Link to={`/venue/${_id}`}>
-                        <button
-                            onClick={getVenueInfo}
-                            className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition"
+            }
+            actions={[
+                <Link to={`/venue/${_id}`} onClick={getVenueInfo} key="view">
+                    <Button type="primary" icon={<EyeOutlined />} className="bg-blue-500 hover:bg-blue-600">
+                        View Details
+                    </Button>
+                </Link>,
+                isDelete ? (
+                    <Button key="delete" type="primary" danger icon={<DeleteOutlined />}>
+                        Delete
+                    </Button>
+                ) : (
+                    auth.user.role !== 'dealer' && (
+                        <Button
+                            key="book"
+                            type="primary"
+                            icon={<CalendarOutlined />}
+                            onClick={() => setBookingModalShow(true)}
+                            className="bg-green-500 hover:bg-green-600"
                         >
-                            View Details
-                        </button>
-                    </Link>
-
-                    {/* Conditional Buttons for Delete and Booking */}
-                    {isDelete ? (
-                        <button className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition">
-                            Delete
-                        </button>
-                    ) : (
-                        auth.user.role !== 'dealer' && (
-                            <button
-                                className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition"
-                                onClick={() => setBookingModalShow(true)}
-                            >
-                                Book
-                            </button>
-                        )
-                    )}
-                </div>
-            </div>
-
-            {/* Booking Modal */}
+                            Book
+                        </Button>
+                    )
+                )
+            ]}
+        >
+            <Meta
+                title={
+                    <Space className="w-full justify-between">
+                        <Title level={4} className="m-0 truncate max-w-[70%]">{venueName}</Title>
+                        <Text strong className="text-green-500">₹ {price}</Text>
+                    </Space>
+                }
+                description={
+                    <Space direction="vertical" className="w-full">
+                        <Text className="text-gray-500 truncate">{location}, {address}</Text>
+                    </Space>
+                }
+            />
             <BookingModel
                 _id={_id}
                 venueName={venueName}
@@ -84,7 +86,7 @@ const VenueCard = (props) => {
                 ownerId={ownerId}
                 onHide={() => setBookingModalShow(false)}
             />
-        </div >
+        </Card>
     );
 };
 

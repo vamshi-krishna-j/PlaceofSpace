@@ -126,7 +126,7 @@ const VenuePage = () => {
                         onHide={() => setBookingModalShow(false)}
                     />
 
-                    <Modal
+                    {/* <Modal
                         title="Give Feedback"
                         visible={feedbackModalShow}
                         onOk={handleFeedbackSubmit}
@@ -142,7 +142,7 @@ const VenuePage = () => {
                                 <TextArea rows={4} value={feedback} onChange={(e) => setFeedback(e.target.value)} />
                             </div>
                         </div>
-                    </Modal>
+                    </Modal> */}
                 </Content>
             </Layout> : <Layout2>
                 <Content className="flex items-center justify-center min-h-screen">

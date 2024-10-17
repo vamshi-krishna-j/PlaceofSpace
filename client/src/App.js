@@ -9,6 +9,7 @@ import Signup from './containers/Signup';
 import ProfilePage from './containers/Profile';
 import VenuePage from './containers/Venue';
 import { PaymentStatus } from './containers/PaymentStatus';
+import AllVenue from './containers/AllVenue';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/signin" component={Signin} />
+        <Route path="/allvenues" component={AllVenue} />
         <Route path="/signup" component={Signup} />
         <PrivateRoute path="/profile/:id" component={ProfilePage} />
         <Route path="/venue/:id" component={VenuePage} />

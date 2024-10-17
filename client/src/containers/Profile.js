@@ -9,6 +9,7 @@ import { isEmpty } from '../helpers/isObjEmpty';
 import AddVenueModel from '../components/UI/AddVenueModel';
 import getDeals from '../actions/dealsHistory.actions';
 import { Layout as Layout2 } from '../components/Layout/index.layout';
+
 const { Content } = Layout;
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -88,7 +89,7 @@ const ProfilePage = () => {
             >
                 New Venue
             </Button>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[24, 24]}>
                 {isEmpty(ownerVenues.allvenues) ? (
                     <Col span={24}>
                         <Text type="secondary">Currently you don't have any venues to rent 😢</Text>
@@ -96,17 +97,19 @@ const ProfilePage = () => {
                 ) : (
                     ownerVenues.allvenues.map((venue) => (
                         <Col xs={24} sm={12} md={8} lg={8} xl={6} key={venue._id}>
-                            <VenueCard
-                                img1={venue.venuePictures[0].img}
-                                img2={venue.venuePictures[1]?.img}
-                                venueName={venue.venueName}
-                                _id={venue._id}
-                                category={venue.category}
-                                address={venue.address}
-                                location={venue.location}
-                                price={venue.price}
-                                isDelete={true}
-                            />
+                            <div className="h-full w-full">
+                                <VenueCard
+                                    img1={venue.venuePictures[0].img}
+                                    img2={venue.venuePictures[1]?.img}
+                                    venueName={venue.venueName}
+                                    _id={venue._id}
+                                    category={venue.category}
+                                    address={venue.address}
+                                    location={venue.location}
+                                    price={venue.price}
+                                    isDelete={true}
+                                />
+                            </div>
                         </Col>
                     ))
                 )}

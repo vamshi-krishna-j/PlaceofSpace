@@ -1,24 +1,24 @@
-import React from 'react'
-import { NavLink, Link } from 'react-router-dom'
-import { Navbar, Container, Nav, Button } from 'react-bootstrap';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link, NavLink } from 'react-router-dom';
+import { Layout as Layout1, Menu, Button, Avatar, Dropdown } from 'antd';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { signout } from '../../actions/auth.actions';
 import { userInfo } from '../../actions/userInfo.actions';
 import { getOwnerVenues } from '../../actions/venue.actions';
 import getDeals from '../../actions/dealsHistory.actions';
-import Avatar from 'boring-avatars';
-import './layout.style.css';
+const { Header, Content } = Layout1;
 
-export const Layout = (props) => {
-
+export const Layout = ({ children }) => {
     const auth = useSelector(state => state.auth);
     const serverStatus = useSelector(state => state.serverStatus);
     const dispatch = useDispatch();
+    // const navigate = useNavigate();
 
     const logout = () => {
-        console.log("signout")
+        console.log("signout");
         dispatch(signout());
-    }
+    };
 
     const getUserInfo = () => {
         const { _id, role } = auth.user;
@@ -26,78 +26,73 @@ export const Layout = (props) => {
         if (role === 'dealer') {
             dispatch(getOwnerVenues(_id));
         }
-        dispatch(getDeals(role, _id))
-    }
-
-    const LoggedInLinks = (props) => {
-        const { _id } = auth.user;
-        return (
-            <Nav className="test">
-                <li className="nav-item">
-                    <Link to={`/profile/${_id}`} className="nav-link" onClick={getUserInfo} style={{ textTransform: 'capitalize' }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <div className="avatar-border">
-                                <Avatar
-                                    size={25}
-                                    name={auth.user.fullName}
-                                    variant="bauhaus"
-                                    colors={["#A3A948", "#EDB92E", "#F85931", "#CE1836", "#009989"]}
-                                />
-                            </div>
-                            <span style={{ marginLeft: "5px", textTransform: "uppercase" }}>{auth.user.firstName}</span>
-                        </div>
-                    </Link>
-                </li>
-                <li className="nav-item" style={{ cursor: "pointer" }}>
-                    <span className="nav-link" onClick={logout}>SIGN OUT</span>
-                </li>
-            </Nav>
-        );
-    }
-
-    const NotLoggedInLinks = () => {
-        return (
-            <Nav>
-                <li className="nav-item">
-                    <NavLink to={`/signin`} className="nav-link">SIGN IN</NavLink>
-                </li>
-                <li className="nav-item" >
-                    <NavLink to={`/signup`} className="nav-link">SIGN UP</NavLink>
-                </li>
-            </Nav>
-        );
-    }
+        dispatch(getDeals(role, _id));
+    };
 
     const refresh = () => {
         window.location.reload();
-    }
+    };
+
+    const userMenu = (
+        <Menu>
+            <Menu.Item key="profile" icon={<UserOutlined />} onClick={getUserInfo}>
+                <Link to={`/profile/${auth.user._id}`}>Profile</Link>
+            </Menu.Item>
+            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logout}>
+                Sign Out
+            </Menu.Item>
+        </Menu>
+    );
 
     if (serverStatus.message === null) {
         return (
-            <>
-                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" style={{ marginBottom: "15px" }}>
-                    <Container>
-                        <Link to={`/`} className="navbar-brand">PlaceofSpace</Link>
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                        <Navbar.Collapse id="responsive-navbar-nav">
-                            <Nav className="me-auto"></Nav>
-                            {auth.authenticate ? LoggedInLinks() : NotLoggedInLinks()}
-                        </Navbar.Collapse>
-                    </Container>
-                </Navbar>
-                {props.children}
-            </>
-        )
+            <Layout1 className="min-h-screen">
+                <Header className="flex items-center justify-between bg-white shadow-md px-4">
+                    <div className="flex items-center">
+                        <Link to="/" className="text-2xl font-bold text-blue-600">
+                            PlaceofSpace
+                        </Link>
+                    </div>
+                    <div className="flex items-center">
+                        {auth.authenticate ? (
+                            <Dropdown overlay={userMenu} placement="bottomRight" arrow>
+                                <Button type="text" className="flex items-center">
+                                    <Avatar
+                                        size="small"
+                                        className="mr-2"
+                                        style={{ backgroundColor: '#1890ff' }}
+                                        icon={<UserOutlined />}
+                                    />
+                                    <span className="hidden md:inline uppercase">{auth.user.firstName}</span>
+                                </Button>
+                            </Dropdown>
+                        ) : (
+                            <div className="space-x-2">
+                                {/* <Button type="text" onClick={() => navigate('/signin')}>
+                                    Sign In
+                                </Button> */}
+                                <NavLink to={`/signin`} className="text-slate-950">SIGN IN</NavLink>
+
+                                {/* <Button type="primary" onClick={() => navigate('/signup')}>
+                                    Sign Up
+                                </Button> */}
+                                <NavLink to={`/signup`} >SIGN UP</NavLink>
+
+                            </div>
+                        )}
+                    </div>
+                </Header>
+                <Content className="p-6">{children}</Content>
+            </Layout1>
+        );
     } else {
         return (
-            <Container className="text-center">
-                <h1 style={{ marginTop: "80px" }}>{serverStatus.message}</h1>
-                <Button variant="primary" onClick={refresh}>
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <h1 className="text-3xl font-bold mb-4">{serverStatus.message}</h1>
+                <Button type="primary" onClick={refresh}>
                     Refresh this page
                 </Button>
-            </Container>
-        )
+            </div>
+        );
     }
-
-}
-
+};

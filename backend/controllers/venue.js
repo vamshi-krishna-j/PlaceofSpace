@@ -20,6 +20,7 @@ const createVenue = (req, res) => {
     }
     console.log(req.files)
     // let venuePictures = ["C:\Users\DELL\OneDrive\Desktop\pic.jpg"];
+    let  venuePictures=null
     if (req.files.length > 0) {
         venuePictures = req.files.map((file) => {
             return { img: file.filename };

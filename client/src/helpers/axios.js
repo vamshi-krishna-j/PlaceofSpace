@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use((res) => {
     } else {
         const { status } = error.response;
         if (status === 500 || status === 400) {
-            localStorage.clear();
+            // localStorage.clear();
             store.dispatch({ type: authConstants.LOGOUT_SUCCESS });
         }
     }

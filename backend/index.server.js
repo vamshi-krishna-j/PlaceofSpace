@@ -17,7 +17,7 @@ const dealerAuthRoutes = require('./routes/dealer.auth');
 const clientAuthRoutes = require('./routes/client.auth');
 const venueRoutes = require('./routes/venue');
 const dealsRoutes = require('./routes/deal');
-
+    
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use('/api', dealerAuthRoutes);
 app.use('/api', clientAuthRoutes);
@@ -25,11 +25,11 @@ app.use('/api', venueRoutes);
 app.use('/api', dealsRoutes);
 
 // mongodb connection
-const connectDB = (dburl) => {
+const connectDB = async (dburl) => {
     return mongoose.connect(dburl, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useCreateIndex: true,
+        useCreateIndex: true,   
         useFindAndModify: false,
     }).then(() => {
         console.log('Database Connected');

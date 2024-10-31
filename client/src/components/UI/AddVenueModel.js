@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addVenue } from '../../actions/venue.actions';
 import categories from '../../assets/data/categories';
@@ -20,7 +19,6 @@ const AddVenueModel = (props) => {
     const [venuePictures, setVenuePictures] = useState([]);
     const [messageModalShow, setMessageModalShow] = useState(false);
 
-
     const handleVenuePictures = (e) => {
         setVenuePictures([
             ...venuePictures,
@@ -37,13 +35,16 @@ const AddVenueModel = (props) => {
         form.append('description', description);
         form.append('price', price);
         form.append('category', category);
-
+console.log(venuePictures)
         for (let picture of venuePictures) {
             form.append('venuePicture', picture);
         }
         console.log(form);
-        dispatch(addVenue(form));
+
+        dispatch(addVenue(form));   
         setMessageModalShow(true);
+      
+        props.onCancel(false)   
     }
     return (
         <Modal

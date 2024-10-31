@@ -1,68 +1,99 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import Input from './Input';
+import { Modal, Button, Form, Input, Typography } from 'antd';
+import { MailOutlined, LockOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { userlogin } from '../../actions/auth.actions';
 import { useSelector, useDispatch } from 'react-redux';
 
-const LoginModel = (props) => {
+const { Text } = Typography;
 
+const LoginModel = ({ show, onHide, title, userType }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const auth = useSelector(state => state.auth);
+    const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
-    const userLogin = (e) => {
-        e.preventDefault();
-        const user = { email, password }
-        dispatch(userlogin(user, props.userType));
-    }
+    const handleLogin = (values) => {
+        const user = { email: values.email, password: values.password };
+        dispatch(userlogin(user, userType));
+    };
+
+    useEffect(() => {
+        if (auth.message) {
+            setErrorMessage(auth.message);
+        }
+    }, [auth.message]);
 
     return (
         <Modal
-            {...props}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
+            visible={show}
+            onCancel={onHide}
+            footer={null}
+            title={<Text className="text-lg font-semibold">{title}</Text>}
             centered
+            width={450}
+            closeIcon={<CloseCircleOutlined style={{ fontSize: '16px' }} />}
+            className="rounded-lg shadow-lg"
         >
-            <Modal.Header >
-                <Modal.Title id="contained-modal-title-vcenter">
-                    {props.title}
-                </Modal.Title>
-                <Button onClick={props.onHide} >X</Button>
-            </Modal.Header>
-            <Modal.Body>
-                <Form onSubmit={userLogin}>
+            <Form
+                name="login_form"
+                layout="vertical"
+                onFinish={handleLogin}
+                className="space-y-4"
+                initialValues={{ email, password }}
+            >
+                <Form.Item
+                    label="Email Address"
+                    name="email"
+                    rules={[
+                        { required: true, message: 'Please enter your email!' },
+                        { type: 'email', message: 'Please enter a valid email!' },
+                    ]}
+                >
                     <Input
-                        label='Email address'
-                        type='email'
-                        placeholder='Enter email'
+                        placeholder="Enter email"
+                        prefix={<MailOutlined className="text-gray-400" />}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className="rounded-md"
                     />
-                    <Input
-                        label='Password'
-                        type='password'
-                        placeholder='Password'
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please enter your password!' }]}
+                >
+                    <Input.Password
+                        placeholder="Enter password"
+                        prefix={<LockOutlined className="text-gray-400" />}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className="rounded-md"
                     />
-                    {
-                        auth.message === '' ?
-                            null
-                            :
-                            <h5 style={{ color: 'red' }}>{errorMessage}</h5>
-                    }
-                    <Button onClick={() => setErrorMessage(auth.message)} variant="primary" type="submit">
+                </Form.Item>
+
+                {errorMessage && (
+                    <Text type="danger" className="block text-center mb-2">
+                        {errorMessage}
+                    </Text>
+                )}
+
+                <Form.Item>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        block
+                        icon={<LockOutlined />}
+                        className="rounded-md bg-blue-500 hover:bg-blue-600 text-white"
+                    >
                         Sign In
                     </Button>
-                </Form>
-            </Modal.Body>
+                </Form.Item>
+            </Form>
         </Modal>
-    )
-}
+    );
+};
 
-export {
-    LoginModel
-}
+export { LoginModel };

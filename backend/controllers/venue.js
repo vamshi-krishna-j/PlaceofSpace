@@ -1,3 +1,4 @@
+
 const Venue = require('../models/venue');
 const Deal = require('../models/deal');
 const slugify = require('slugify');
@@ -20,7 +21,7 @@ const createVenue = (req, res) => {
     }
     console.log(req.files)
     // let venuePictures = ["C:\Users\DELL\OneDrive\Desktop\pic.jpg"];
-    let  venuePictures=null
+    let venuePictures = null
     if (req.files.length > 0) {
         venuePictures = req.files.map((file) => {
             return { img: file.filename };
@@ -86,6 +87,15 @@ const checkAvailability = (req, res) => {
                 return res.status(200).json({ msg: "Venue is booked for date, choose another date" })
             }
         })
+}
+
+const getVenueDeals = (req, res) => {
+    const id = req.params().id;
+    const deals = Deal.find({
+        venueId: id
+    })
+    console.log(deals)
+
 }
 
 module.exports = {

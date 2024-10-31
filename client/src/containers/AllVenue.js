@@ -8,7 +8,7 @@ import { getVenues } from '../actions/venue.actions'
 import { isEmpty } from '../helpers/isObjEmpty'
 import VenueCard from '../components/UI/VenueCard'
 import { Layout as Layout2 } from '../components/Layout/index.layout'
-
+import categories from '../assets/data/categories'
 const { Content, Sider } = Layout
 const { Title, Paragraph } = Typography
 const { Option } = Select
@@ -85,11 +85,18 @@ export default function AllVenue() {
                         className="mb-4"
                     >
                         <Option value="">All Categories</Option>
-                        <Option value="Wedding">Wedding</Option>
+                        {/* <Option value="Wedding">Wedding</Option>
                         <Option value="Corporate">Corporate</Option>
                         <Option value="Party">Party</Option>
                         <Option value="Conference">Conference</Option>
-                        <Option value="Exhibition">Exhibition</Option>
+                        <Option value="Exhibition">Exhibition</Option> */}
+                        {
+                            categories.map((category) => {
+                                return (
+                                    <option value={category}>{category}</option>
+                                )
+                            })
+                        }
                     </Select>
                     <Paragraph>Price Range</Paragraph>
                     <Slider

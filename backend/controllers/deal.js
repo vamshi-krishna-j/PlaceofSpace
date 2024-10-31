@@ -3,7 +3,7 @@ const Deal = require('../models/deal');
 
 const checkout = async (req, res) => {
     console.log("checkout")
-    const { venueId, eventDate, bill, venueName, venueOwnerId } = req.body;
+    const { venueId, eventDate, bill, venueName, venueOwnerId, eventStartTime, eventEndTime } = req.body;
     console.log(process.env.global_client_url)
     try {
         const session = await stripe.checkout.sessions.create({
@@ -26,7 +26,7 @@ const checkout = async (req, res) => {
         })
         if (session) {
             const deal = new Deal({
-                venueId, eventDate, venueName, venueOwnerId,
+                venueId, eventDate, venueName, venueOwnerId, eventStartTime, eventEndTime,
                 bill: bill,
                 userId: req.user.id
             });
@@ -85,11 +85,23 @@ const getDeal = (req, res) => {
         })
 }
 
+const getVenueDeals = async (req, res) => {
+    const id = req.params.venueId;
+    console.log(req.params)
+    const deals = await Deal.find({
+        venueId: id,
+        status: "green"
+    })
+    console.log(deals)
+    return res.status(200).json({ deals })
+
+}
 module.exports = {
     checkout,
     confirmDealsOfUser,
     confirmDealsOfDealer,
     getDeal,
     confirmDeal,
-    deleteUnconfirmDeal
+    deleteUnconfirmDeal,
+    getVenueDeals
 }

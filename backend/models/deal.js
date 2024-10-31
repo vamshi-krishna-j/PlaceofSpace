@@ -20,6 +20,14 @@ const dealSchema = new mongoose.Schema({
         type: String,
         default: "blue"
     },
+    eventStartTime: {
+        type: String,
+        default: ""
+    },
+    eventEndTime: {
+        type: String,
+        default: ""
+    },
     date_added: {
         type: Date,
         default: Date.now

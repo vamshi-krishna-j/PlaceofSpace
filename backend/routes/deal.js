@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDeal, confirmDealsOfUser, confirmDealsOfDealer, checkout, confirmDeal, deleteUnconfirmDeal } = require('../controllers/deal');
+const { getDeal, confirmDealsOfUser, confirmDealsOfDealer, checkout, confirmDeal, deleteUnconfirmDeal, getVenueDeals, } = require('../controllers/deal');
 const { requireSignIn, clientMiddleware, dealerMiddleware } = require('../common_middlewares/index')
 const router = express.Router();
 
@@ -9,5 +9,5 @@ router.delete('/delete-unconfirmDeal/:dealId', requireSignIn, deleteUnconfirmDea
 router.get('/confirm-deals/:userId', requireSignIn, clientMiddleware, confirmDealsOfUser);
 router.get('/confirm-deals-dealer/:dealerId', requireSignIn, dealerMiddleware, confirmDealsOfDealer);
 router.get('/deal/:dealId', requireSignIn, getDeal);
-
+router.get('/venueDeals/:venueId', requireSignIn, getVenueDeals)
 module.exports = router;

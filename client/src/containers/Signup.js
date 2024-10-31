@@ -1,44 +1,37 @@
 import React, { useState } from 'react';
 import { Layout } from '../components/Layout/index.layout';
-import { Container, Form, Button, Row, Col, Spinner } from 'react-bootstrap';
-import Input from '../components/UI/Input';
+import { Form, Input, Button, Radio, Row, Col, Spin, Typography, Modal } from 'antd';
 import { Redirect } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { userRegister } from '../actions/register.actions';
-import MessageBox from '../components/UI/MessageBox';
 
-const Signup = (props) => {
+const { Title, Text } = Typography;
+
+const Signup = () => {
     document.title = "PlaceOfSpace | Sign Up";
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [contactNumber, setContactNumber] = useState('');
-    const [userType, setUserType] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
+    const [form] = Form.useForm();
     const [messageModalShow, setMessageModalShow] = useState(false);
 
     const dispatch = useDispatch();
 
-    const register = (e) => {
-        e.preventDefault();
-        const userInfo = { userType, firstName, lastName, contactNumber, email, password };
-        dispatch(userRegister(userInfo));
-        setMessageModalShow(true);
-    }
+    const auth = useSelector((state) => state.auth);
+    const registrationStatus = useSelector((state) => state.registrationStatus);
 
-    const auth = useSelector(state => state.auth);
-    const registrationStatus = useSelector(state => state.registrationStatus);
+    const onFinish = (values) => {
+        dispatch(userRegister(values));
+        setMessageModalShow(true);
+    };
+
     if (auth.authenticate) {
-        return <Redirect to={'/'} />
+        return <Redirect to={'/'} />;
     }
 
     if (registrationStatus.loading) {
         return (
             <Layout>
-                <div className='text-center' style={{ marginTop: '60px' }}>
-                    <h1>Saving your info 🎉</h1>
-                    <Spinner animation="border" variant="success" />
+                <div className="flex flex-col items-center justify-center min-h-screen text-center mt-16">
+                    <Title level={2}>Saving your info 🎉</Title>
+                    <Spin size="large" className="mt-4" />
                 </div>
             </Layout>
         );
@@ -46,97 +39,100 @@ const Signup = (props) => {
 
     return (
         <Layout>
-            <Container>
-                <MessageBox
-                    show={messageModalShow}
-                    onHide={() => setMessageModalShow(false)}
-                    message={registrationStatus.message}
-                />
-                <h2 className='text-center'>SIGN UP 📝</h2>
-                <Row style={{ marginTop: '30px' }}>
-                    <Col md={{ span: 6, offset: 3 }}>
-                        <Form onSubmit={register}>
-                            <Row>
-                                <Col md={6}>
-                                    <Input
-                                        label='First Name'
-                                        type='text'
-                                        placeholder='First Name'
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                </Col>
-                                <Col md={6}>
-                                    <Input
-                                        label='Last Name'
-                                        type='text'
-                                        placeholder='Last Name'
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                    />
-                                </Col>
-                            </Row>
+            <Modal
+                visible={messageModalShow}
+                onCancel={() => setMessageModalShow(false)}
+                footer={null}
+                centered
+            >
+                <Text>{registrationStatus.message}</Text>
+            </Modal>
 
-                            <Input
-                                label='Contact no'
-                                type='tel'
-                                placeholder='Mobile no'
-                                value={contactNumber}
-                                onChange={(e) => setContactNumber(e.target.value)}
-                            />
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-8">
+                <Title level={2} className="text-center">SIGN UP 📝</Title>
+                <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+                    <Form
+                        form={form}
+                        name="signup_form"
+                        layout="vertical"
+                        onFinish={onFinish}
+                        className="space-y-4"
+                    >
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="First Name"
+                                    name="firstName"
+                                    rules={[{ required: true, message: 'Please enter your first name!' }]}
+                                >
+                                    <Input placeholder="First Name" />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="Last Name"
+                                    name="lastName"
+                                    rules={[{ required: true, message: 'Please enter your last name!' }]}
+                                >
+                                    <Input placeholder="Last Name" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
 
-                            <Row>
-                                <Col >
-                                    <div className="mb-3">
-                                        <Form.Label>Choose User Type</Form.Label>
-                                        <br />
-                                        <Form.Check
-                                            required
-                                            inline
-                                            type='radio'
-                                            name='userType'
-                                            label='Client'
-                                            id='Client'
-                                            value='client'
-                                            onChange={(e) => setUserType(e.target.value)}
-                                        />
-                                        <Form.Check
-                                            inline
-                                            type='radio'
-                                            name='userType'
-                                            label='Dealer'
-                                            id='Dealer'
-                                            value='dealer'
-                                            onChange={(e) => setUserType(e.target.value)}
-                                        />
-                                    </div>
-                                </Col>
-                            </Row>
+                        <Form.Item
+                            label="Contact Number"
+                            name="contactNumber"
+                            rules={[
+                                { required: true, message: 'Please enter your contact number!' },
+                                { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit number!' }
+                            ]}
+                        >
+                            <Input placeholder="Mobile No" />
+                        </Form.Item>
 
-                            <Input
-                                label='Email Address'
-                                type='email'
-                                placeholder='Enter email'
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <Input
-                                label='Password'
-                                type='password'
-                                placeholder='Password'
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <Button variant="primary" type="submit" style={{ marginRight: '10px' }}>
+                        <Form.Item
+                            label="User Type"
+                            name="userType"
+                            rules={[{ required: true, message: 'Please select a user type!' }]}
+                        >
+                            <Radio.Group>
+                                <Radio value="client">Client</Radio>
+                                <Radio value="dealer">Dealer</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Email Address"
+                            name="email"
+                            rules={[
+                                { required: true, message: 'Please enter your email!' },
+                                { type: 'email', message: 'Please enter a valid email!' }
+                            ]}
+                        >
+                            <Input placeholder="Enter email" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: 'Please enter your password!' }]}
+                        >
+                            <Input.Password placeholder="Password" />
+                        </Form.Item>
+
+                        <Form.Item className="flex space-x-4">
+                            <Button type="primary" htmlType="submit" block className="rounded-md">
                                 Sign Up
                             </Button>
-                            <Button variant="danger" type="reset" style={{ marginLeft: '10px' }}>Reset</Button>
-                        </Form>
-                    </Col>
-                </Row>
-            </Container>
-        </Layout >
-    )
-}
+                            <Button htmlType="reset" className="rounded-md">
+                                Reset
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </div>
+        </Layout>
+    );
+};
 
-export default Signup
+export default Signup;

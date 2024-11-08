@@ -6,7 +6,6 @@ import { EyeOutlined, DeleteOutlined, CalendarOutlined } from '@ant-design/icons
 import { getOneVenue } from '../../actions/venue.actions';
 import { getPublicURL } from '../../urlConfig';
 import BookingModel from './BookingModel';
-
 const { Meta } = Card;
 const { Text, Title } = Typography;
 
@@ -19,6 +18,7 @@ const VenueCard = (props) => {
 
     const getVenueInfo = () => {
         dispatch(getOneVenue(_id));
+
     };
 
     return (

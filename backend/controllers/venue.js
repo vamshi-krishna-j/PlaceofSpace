@@ -89,19 +89,13 @@ const checkAvailability = (req, res) => {
         })
 }
 
-const getVenueDeals = (req, res) => {
-    const id = req.params().id;
-    const deals = Deal.find({
-        venueId: id
-    })
-    console.log(deals)
 
-}
 
 module.exports = {
     createVenue,
     getVenueByVenueId,
     getAllVenuesByOwnerId,
     getAllVenues,
-    checkAvailability
+    checkAvailability,
+    getVenueByVenueId
 }

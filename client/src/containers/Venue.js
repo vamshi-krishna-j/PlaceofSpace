@@ -192,7 +192,7 @@ const VenuePage = () => {
                                         avatar={<Avatar icon={<UserOutlined />} />}
                                         title={
                                             <div className="flex items-center justify-between">
-                                                <Text strong>{review.user.firstName}</Text>
+                                                <Text strong>{review.user?.firstName}</Text>
                                                 <Rate disabled defaultValue={review.rating} className="text-sm" />
                                             </div>
                                         }

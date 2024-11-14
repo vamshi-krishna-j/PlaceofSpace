@@ -12,11 +12,13 @@ const LoginModel = ({ show, onHide, title, userType }) => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const auth = useSelector((state) => state.auth);
+
     const dispatch = useDispatch();
 
     const handleLogin = (values) => {
         const user = { email: values.email, password: values.password };
         dispatch(userlogin(user, userType));
+
     };
 
     useEffect(() => {

@@ -1,16 +1,26 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const shortid = require('shortid');
-
+const OTP = require('../models/otp');
 const signup = (req, res) => {
+    console.log(req.body)
     User.findOne({ email: req.body.email })
-        .exec((error, user) => {
+        .exec(async (error, user) => {
             // If user already exists
             if (error) return res.status(400).json({ msg: `Something went wrong`, error });
             if (user) return res.status(409).json({ msg: 'User already exits' });
 
             // If new user trys to login
-            const { firstName, lastName, email, password, contactNumber } = req.body;
+            const { firstName, lastName, email, password, contactNumber, otp } = req.body;
+
+            const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+
+            if (response.length === 0 || otp !== response[0].otp) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'The OTP is not valid',
+                });
+            }
             const _user = new User({
                 firstName, lastName, email, password, contactNumber,
                 username: shortid.generate()

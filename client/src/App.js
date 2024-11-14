@@ -10,6 +10,7 @@ import ProfilePage from './containers/Profile';
 import VenuePage from './containers/Venue';
 import { PaymentStatus } from './containers/PaymentStatus';
 import AllVenue from './containers/AllVenue';
+import OTPAuthentication from './components/UI/OTPAuthentication';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <PrivateRoute path="/profile/:id" component={ProfilePage} />
         <Route path="/venue/:id" component={VenuePage} />
         <Route path="/payment-status" component={PaymentStatus} />
+        <Route path='/verify-user' component={OTPAuthentication} />
       </Switch>
     </div>
   );

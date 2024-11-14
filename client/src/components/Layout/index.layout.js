@@ -7,6 +7,7 @@ import { signout } from '../../actions/auth.actions';
 import { userInfo } from '../../actions/userInfo.actions';
 import { getOwnerVenues } from '../../actions/venue.actions';
 import getDeals from '../../actions/dealsHistory.actions';
+
 const { Header, Content } = Layout1;
 
 export const Layout = ({ children }) => {
@@ -67,17 +68,19 @@ export const Layout = ({ children }) => {
                                 </Button>
                             </Dropdown>
                         ) : (
-                            <div className="space-x-2">
-                                {/* <Button type="text" onClick={() => navigate('/signin')}>
+                            <div className="space-x-4">
+                                <NavLink
+                                    to="/signin"
+                                    className="text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-md transition duration-300 ease-in-out"
+                                >
                                     Sign In
-                                </Button> */}
-                                <NavLink to={`/signin`} className="text-slate-950">SIGN IN</NavLink>
-
-                                {/* <Button type="primary" onClick={() => navigate('/signup')}>
+                                </NavLink>
+                                <NavLink
+                                    to="/signup"
+                                    className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-300 ease-in-out"
+                                >
                                     Sign Up
-                                </Button> */}
-                                <NavLink to={`/signup`} >SIGN UP</NavLink>
-
+                                </NavLink>
                             </div>
                         )}
                     </div>

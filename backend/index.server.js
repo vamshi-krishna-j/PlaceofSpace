@@ -17,7 +17,8 @@ const dealerAuthRoutes = require('./routes/dealer.auth');
 const clientAuthRoutes = require('./routes/client.auth');
 const venueRoutes = require('./routes/venue');
 const dealsRoutes = require('./routes/deal');
-const reviewRoutes = require('./routes/review')
+const reviewRoutes = require('./routes/review');
+const otpRouter = require('./routes/otp');
 
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use('/api', dealerAuthRoutes);
@@ -25,6 +26,7 @@ app.use('/api', clientAuthRoutes);
 app.use('/api', venueRoutes);
 app.use('/api', dealsRoutes);
 app.use('/api', reviewRoutes)
+app.use('/api', otpRouter)
 
 // mongodb connection
 const connectDB = async (dburl) => {

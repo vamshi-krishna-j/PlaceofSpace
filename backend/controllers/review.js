@@ -1,3 +1,4 @@
+const review = require('../models/review');
 const ReviewSchema = require('../models/review')
 
 const addReview = async (req, res) => {
@@ -18,6 +19,25 @@ const addReview = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+}
+
+const updateReview = async (req, res) => {
+    try {
+        const { user_id: userId, _id: venueId, rating, feedback: reviewText } = req.body;
+
+        const review = await ReviewSchema.findOneAndUpdate(
+            { user: userId },
+            { reviewText: reviewText, rating: rating },
+            { new: true }
+        )
+
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(401).json("not able to update the review")
+    }
+
+    return res.status(200).json("Successfully update the review")
 }
 
 // Get all reviews for a product
@@ -66,8 +86,9 @@ const getAverageRating = async (req, res) => {
 
 const getUserReview = async (req, res) => {
     try {
-        const { _id: userId } = req.params;
-        const reviews = await ReviewSchema.findOne({ userId });
+        const { id: userId } = req.params;
+        console.log(userId)
+        const reviews = await ReviewSchema.findOne({ user: userId });
         res.status(200).json(reviews);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -118,5 +139,6 @@ module.exports = {
     getAllReview,
     addReview,
     getAverageRating,
-    getUserReview
+    getUserReview,
+    updateReview
 }

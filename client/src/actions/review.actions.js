@@ -47,3 +47,10 @@ export const getUserReview = (id) => {
         return response.data
     }
 }
+export const updateReview = (data) => {
+    return async (dispatch) => {
+        const response = await axios.patch('/', data)
+        dispatch({ type: 'success', payload: { response } })
+        return response.data
+    }
+}

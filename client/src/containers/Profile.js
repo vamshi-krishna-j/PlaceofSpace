@@ -125,7 +125,7 @@ const ProfilePage = () => {
                         <Col xs={24} md={8}>
                             <ProfileInfo />
                             <div style={{ marginTop: '20px' }}>
-                                <Statistics />
+                                {auth?.user?.role == 'dealer' && <Statistics />}
                             </div>
                         </Col>
                         <Col xs={24} md={16}>

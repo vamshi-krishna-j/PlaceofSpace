@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Button, Tag, Typography, Space } from 'antd';
 import { EyeOutlined, DeleteOutlined, CalendarOutlined } from '@ant-design/icons';
@@ -15,9 +15,12 @@ const VenueCard = (props) => {
 
     const auth = useSelector(state => state.auth);
     const dispatch = useDispatch();
+    const hist = useHistory()
 
-    const getVenueInfo = () => {
-        dispatch(getOneVenue(_id));
+    const getVenueInfo = async () => {
+        await dispatch(getOneVenue(_id));
+
+        hist.push(`/venue/${_id}`)
 
     };
 
@@ -38,11 +41,11 @@ const VenueCard = (props) => {
                 </div>
             }
             actions={[
-                <Link to={`/venue/${_id}`} onClick={getVenueInfo} key="view">
-                    <Button type="primary" icon={<EyeOutlined />} className="bg-blue-500 hover:bg-blue-600">
-                        View Details
-                    </Button>
-                </Link>,
+
+                <Button onClick={getVenueInfo} key="view" type="primary" icon={<EyeOutlined />} className="bg-blue-500 hover:bg-blue-600">
+                    View Details
+
+                </Button>,
                 isDelete ? (
                     <Button key="delete" type="primary" danger icon={<DeleteOutlined />}>
                         Delete

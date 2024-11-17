@@ -6,7 +6,7 @@ import { getPublicURL } from '../urlConfig';
 import BookingModel from '../components/UI/BookingModel';
 import { CalendarOutlined, EnvironmentOutlined, DollarOutlined, UserOutlined, PhoneOutlined, CommentOutlined } from '@ant-design/icons';
 import { Layout as Layout2 } from '../components/Layout/index.layout';
-import { addReview, getAllReview, getRating, getUserReview } from '../actions/review.actions';
+import { addReview, getAllReview, getRating, getUserReview, updateReview } from '../actions/review.actions';
 const axios = require('axios')
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -15,6 +15,8 @@ const VenuePage = () => {
     document.title = "PlaceofSpace | Venue Details";
     const dispatch = useDispatch();
     const [isLoading, setisLoading] = useState(false)
+    const [myReview, setMyReview] = useState(null)
+
     const [allReviews, setAllReviews] = useState([])
     const auth = useSelector(state => state.auth);
     const [bookingModalShow, setBookingModalShow] = useState(false);
@@ -42,7 +44,7 @@ const VenuePage = () => {
                 const response = await dispatch(getAllReview(_id || ''))
                 const avgRating = await dispatch(getRating(_id))
                 const userReview = await dispatch(getUserReview(auth.user._id))
-
+                setMyReview(userReview)
                 setAllReviews(response.reviews)
                 setRating(avgRating.averageRating)
             }
@@ -72,14 +74,22 @@ const VenuePage = () => {
 
     const handleFeedbackSubmit = async () => {
         // Implement your feedback submission logic here
-        console.log(rating, feedback)
-        console.log(auth)
         const user_id = auth?.user?._id;
         const payload = { rating, feedback, user_id, _id }
-        console.log(payload)
-        const response = dispatch(addReview(payload))
-        console.log(response)
-        message.success('Thank you for your feedback!');
+        if (myReview) {
+            const response = dispatch(updateReview(payload))
+            console.log(response)
+
+        }
+        else {
+            const response = dispatch(addReview(payload))
+            console.log(response);
+            message.success('Thank you for your feedback!');
+
+        }
+
+
+
         setFeedbackModalShow(false);
     };
     const ReviewSection = ({ reviews }) => {
@@ -230,11 +240,11 @@ const VenuePage = () => {
                         <div className="space-y-4">
                             <div>
                                 <Text>Your Rating:</Text>
-                                <Rate value={rating} onChange={setRating} />
+                                <Rate defaultValue={myReview?.rating} onChange={setRating} />
                             </div>
                             <div>
                                 <Text>Your Feedback:</Text>
-                                <TextArea rows={4} value={feedback} onChange={(e) => setFeedback(e.target.value)} />
+                                <TextArea defaultValue={myReview?.reviewText} rows={4} onChange={(e) => setFeedback(e.target.value)} />
                             </div>
                         </div>
                     </Modal>

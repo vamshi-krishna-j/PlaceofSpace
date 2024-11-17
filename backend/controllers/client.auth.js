@@ -2,6 +2,8 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const shortid = require('shortid');
 const OTP = require('../models/otp');
+const mailSender = require('../utils/mailSender');
+const registerd_body = require('../utils/mailBody');
 const signup = (req, res) => {
     console.log(req.body)
     User.findOne({ email: req.body.email })
@@ -25,10 +27,12 @@ const signup = (req, res) => {
                 firstName, lastName, email, password, contactNumber,
                 username: shortid.generate()
             })
+            mailSender(email, "Account Created Successfully", registerd_body(firstName + " " + lastName, ""));
 
             _user.save((error, data) => {
                 if (error) return res.status(400).json({ msg: `Something went wrong`, error });
                 if (data) return res.status(201).json({ msg: 'User Successfully register !!' });
+                console.log(data.email, data?.name, email)
             })
         })
 }
